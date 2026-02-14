@@ -5,15 +5,39 @@ interface ControlsProps {
     onTogglePlay: () => void;
     onReset: () => void;
     fileName: string;
+    visualMode: 'universe' | 'firework';
+    onModeChange: (mode: 'universe' | 'firework') => void;
 }
 
-const Controls: React.FC<ControlsProps> = ({ isPlaying, onTogglePlay, onReset, fileName }) => {
+const Controls: React.FC<ControlsProps> = ({ isPlaying, onTogglePlay, onReset, fileName, visualMode, onModeChange }) => {
     return (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-md px-4">
-            <div className="glass px-6 py-4 rounded-2xl flex items-center justify-between gap-4">
+            <div className="glass px-6 py-4 rounded-2xl flex items-center justify-between gap-6">
                 <div className="flex-1 min-w-0">
                     <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Now Playing</p>
                     <p className="text-white font-medium truncate text-sm">{fileName}</p>
+                </div>
+
+                {/* Mode Toggle */}
+                <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
+                    <button
+                        onClick={() => onModeChange('universe')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${visualMode === 'universe'
+                                ? 'bg-white text-black shadow-lg'
+                                : 'text-gray-400 hover:text-white'
+                            }`}
+                    >
+                        UNIVERSE
+                    </button>
+                    <button
+                        onClick={() => onModeChange('firework')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${visualMode === 'firework'
+                                ? 'bg-white text-black shadow-lg'
+                                : 'text-gray-400 hover:text-white'
+                            }`}
+                    >
+                        FIREWORK
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-3">

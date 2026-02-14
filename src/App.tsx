@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useAudioAnalyzer } from './hooks/useAudioAnalyzer';
 import LandingPage from './components/LandingPage';
-import FireworkCanvas from './components/FireworkCanvas';
+import FireworkCanvas from './components/FireworkCanvas'; // This is the 'Universe' mode
+import FireworkModeCanvas from './components/FireworkModeCanvas'; // This is the new 'Firework' mode
 import Controls from './components/Controls';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
     analysisData
   } = useAudioAnalyzer();
   const [fileName, setFileName] = useState('');
+  const [visualMode, setVisualMode] = useState<'universe' | 'firework'>('universe');
 
   const handleFileSelect = useCallback(async (file: File) => {
     setFileName(file.name);
@@ -43,12 +45,21 @@ function App() {
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
-      <FireworkCanvas
-        getFrequencyData={getFrequencyData}
-        getCurrentTime={getCurrentTime}
-        analysisData={analysisData}
-        isPlaying={isPlaying}
-      />
+      {visualMode === 'universe' ? (
+        <FireworkCanvas
+          getFrequencyData={getFrequencyData}
+          getCurrentTime={getCurrentTime}
+          analysisData={analysisData}
+          isPlaying={isPlaying}
+        />
+      ) : (
+        <FireworkModeCanvas
+          getFrequencyData={getFrequencyData}
+          getCurrentTime={getCurrentTime}
+          analysisData={analysisData}
+          isPlaying={isPlaying}
+        />
+      )}
 
       <LandingPage
         onFileSelect={handleFileSelect}
@@ -62,6 +73,8 @@ function App() {
           onTogglePlay={togglePlay}
           onReset={handleReset}
           fileName={fileName}
+          visualMode={visualMode}
+          onModeChange={setVisualMode}
         />
       )}
 
