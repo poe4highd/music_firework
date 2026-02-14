@@ -17,7 +17,7 @@ export class FireworkEngine {
     ctx: CanvasRenderingContext2D;
     width: number;
     height: number;
-    keyCounts: number = 88; // Standard piano keys
+    keyCounts: number = 88;
 
     constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
         this.ctx = ctx;
@@ -31,22 +31,22 @@ export class FireworkEngine {
     }
 
     createFireworkBatch(x: number, y: number, color: string, intensity: number) {
-        const count = Math.floor(10 + intensity * 20);
+        const count = Math.floor(15 + intensity * 25);
         for (let i = 0; i < count; i++) {
-            const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.4;
-            const speed = 2 + Math.random() * 8 * intensity;
-            const life = 0.6 + Math.random() * 0.8;
+            const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+            const speed = 3 + Math.random() * 10 * intensity;
+            const life = 0.5 + Math.random() * 1.0;
             this.particles.push({
                 x, y,
                 vx: Math.cos(angle) * speed,
                 vy: Math.sin(angle) * speed,
                 alpha: 1,
                 color,
-                size: 1 + Math.random() * 2,
+                size: 1.5 + Math.random() * 2.5,
                 life,
                 maxLife: life,
-                gravity: 0.15,
-                friction: 0.97
+                gravity: 0.18,
+                friction: 0.96
             });
         }
     }
@@ -67,59 +67,73 @@ export class FireworkEngine {
 
     draw(data: Uint8Array | null) {
         this.drawBackground();
-        this.drawGrass();
-        this.drawPianoKeys(data);
+        this.drawGrassAndKeys(data);
         this.drawParticles();
     }
 
     private drawBackground() {
         const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
         grad.addColorStop(0, '#000814');
-        grad.addColorStop(1, '#001d3d');
+        grad.addColorStop(0.7, '#001d3d');
+        grad.addColorStop(1, '#003566');
         this.ctx.fillStyle = grad;
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
-    private drawGrass() {
-        const grassHeight = this.height * 0.25;
-        const grad = this.ctx.createLinearGradient(0, this.height - grassHeight, 0, this.height);
-        grad.addColorStop(0, '#2d6a4f');
-        grad.addColorStop(1, '#081c15');
-        this.ctx.fillStyle = grad;
-        this.ctx.fillRect(0, this.height - grassHeight, this.width, grassHeight);
-
-        // Subtle grass blades
-        this.ctx.strokeStyle = 'rgba(116, 198, 157, 0.1)';
-        this.ctx.lineWidth = 1;
-        for (let i = 0; i < this.width; i += 4) {
-            const h = Math.random() * 20;
-            this.ctx.beginPath();
-            this.ctx.moveTo(i, this.height - grassHeight);
-            this.ctx.lineTo(i + (Math.random() - 0.5) * 5, this.height - grassHeight - h);
-            this.ctx.stroke();
-        }
-    }
-
-    private drawPianoKeys(data: Uint8Array | null) {
-        const grassY = this.height * 0.75;
+    private drawGrassAndKeys(data: Uint8Array | null) {
         const keyWidth = this.width / this.keyCounts;
-        const keyHeight = 4;
+        const grassHeight = this.height * 0.25;
+        const grassTopY = this.height - grassHeight;
 
         for (let i = 0; i < this.keyCounts; i++) {
-            const val = data ? data[Math.floor(i * (data.length / this.keyCounts))] : 0;
+            const x = i * keyWidth;
+            const freqIndex = Math.floor(i * (data?.length || 1024) / this.keyCounts);
+            const val = data ? data[freqIndex] : 0;
             const intensity = val / 255;
+            const centerX = x + keyWidth / 2;
 
-            // Draw matching "firework" if intensity is high
-            if (intensity > 0.7 && Math.random() > 0.9) {
-                const x = i * keyWidth + keyWidth / 2;
-                const color = `hsla(${200 + intensity * 60}, 100%, 70%, 1)`;
-                this.createFireworkBatch(x, grassY, color, intensity);
+            // Draw segmented grass
+            this.ctx.save();
+            const grassGrad = this.ctx.createLinearGradient(x, grassTopY, x, this.height);
+            // Highlight grass if note is active
+            const baseHue = 150; // Green
+            const l = 10 + intensity * 30;
+            grassGrad.addColorStop(0, `hsl(${baseHue}, 50%, ${l + 10}%)`);
+            grassGrad.addColorStop(1, `hsl(${baseHue}, 60%, ${l}%)`);
+            this.ctx.fillStyle = grassGrad;
+            this.ctx.fillRect(x, grassTopY, keyWidth, grassHeight);
+
+            // Draw blades aligned with key center
+            if (intensity > 0.3) {
+                this.ctx.strokeStyle = `hsla(${baseHue}, 70%, 70%, ${intensity * 0.4})`;
+                this.ctx.lineWidth = 1;
+                for (let b = 0; b < 3; b++) {
+                    const bx = x + Math.random() * keyWidth;
+                    const bh = 5 + Math.random() * 15 * intensity;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(bx, grassTopY);
+                    this.ctx.lineTo(bx + (Math.random() - 0.5) * 4, grassTopY - bh);
+                    this.ctx.stroke();
+                }
+            }
+            this.ctx.restore();
+
+            // Firework logic
+            if (intensity > 0.75 && Math.random() > 0.92) {
+                // Color mapping: Low keys (red/orange) -> High keys (blue/purple)
+                const hue = (i / this.keyCounts) * 240 + 20;
+                const color = `hsla(${hue}, 100%, 75%, 1)`;
+                this.createFireworkBatch(centerX, grassTopY, color, intensity);
             }
 
-            this.ctx.fillStyle = intensity > 0.5 ? '#fff' : 'rgba(255, 255, 255, 0.3)';
-            this.ctx.shadowBlur = intensity * 20;
-            this.ctx.shadowColor = '#fff';
-            this.ctx.fillRect(i * keyWidth, grassY - keyHeight / 2, keyWidth - 1, keyHeight);
+            // Piano key rendering
+            const keyHeight = 6;
+            this.ctx.fillStyle = intensity > 0.4 ? '#fff' : 'rgba(255, 255, 255, 0.2)';
+            if (intensity > 0.6) {
+                this.ctx.shadowBlur = 15;
+                this.ctx.shadowColor = '#fff';
+            }
+            this.ctx.fillRect(x, grassTopY - keyHeight / 2, keyWidth - 1, keyHeight);
             this.ctx.shadowBlur = 0;
         }
     }
