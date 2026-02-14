@@ -11,9 +11,10 @@
 
 ### 3. 功能开发
 #### 回顾项
-1. **Node 升级**：已成功切换至 v22，`npm run build` 通过。
+1. **Node 升级**：已成功切换至 v22.22.0，解决了 Vite 兼容性警告。
 2. **双模式支持**：重命名原有可视化为 `Universe`，新增 `Firework` 模式。
 3. **渲染器实现**：`FireworkEngine` 实现了草地、钢琴键及喷泉烟火逻辑。
 4. **UI 切换**：在 `Controls.tsx` 增加了版本切换 Tab。
+5. **MIME 错误修复**：清理了 `node_modules/.vite` 缓存并重装依赖，`npm run build` 成功通过。
 
 ---
