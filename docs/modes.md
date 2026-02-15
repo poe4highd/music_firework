@@ -1,38 +1,38 @@
-# Visual Mode Technical Features
+# 视觉模式技术特性详情
 
-This document details the two primary visual visualization modes implemented in Music Firework.
+本文档详细介绍了 Music Firework 中实现的两种主要视觉可视化模式。
 
 ---
 
 ## 🌌 Universe Mode (宇宙模式)
 
-The original visualization mode inspired by cosmic beauty.
+受宇宙美感启发的原始可视化模式。
 
-### Key Features
-- **Dynamic Starfield**: A real-time generated background of stars that pulses with the audio's sub-bass.
-- **Audio Sensitivity**:
-  - **Sub-Bass (20-60Hz)**: Controls starfield pulse and supernova intensity.
-  - **Kick (60-250Hz)**: Triggers meteor strikes across the screen.
-  - **Vocals (500-2000Hz)**: Adjusts the glow intensity of the central core.
-  - **Highs (4000Hz+)**: Triggers lightning-fast projectile particles.
-- **Supernova Events**: Major energy spikes trigger a full-screen supernova explosion that clears the current particle field.
-- **Particle Physics**: Complex interactions including gravity, friction, and "ships" that navigate the audio waves.
+### 核心特性
+- **动态星场**：实时生成的背景星空，随音频次低音（Sub-Bass）节拍脉动。
+- **音频灵敏度映射**：
+  - **次低音 (20-60Hz)**：控制星场脉动和超新星爆发强度。
+  - **鼓点 (60-250Hz)**：触发横跨屏幕的流星击中效果。
+  - **人声 (500-2000Hz)**：调节中心核心的发光亮度。
+  - **高音 (4000Hz+)**: 触发极速运行的投射粒子。
+- **超新星事件**：重大的能量峰值会触发全屏超新星爆炸效果，清空当前粒子场。
+- **粒子物理**：复杂的交互模拟，包括重力、摩擦力以及在音频波浪中穿梭的“飞船”逻辑。
 
 ---
 
 ## 🎆 Firework Mode (钢琴烟火模式)
 
-A premium, interactive visualization tailored for melodic music (especially piano).
+专为旋律性音乐（特别是钢琴曲）设计的高级交互式可视化模式。
 
-### Key Features
-- **88-Key Piano Visualization**:
-  - A horizontal line of piano keys that react individually to their corresponding musical frequency.
-  - **Logarithmic Mapping**: Uses a precise log-scale (20Hz to 5000Hz) to map 1024-bin FFT data to 88 keys, ensuring a balanced visual distribution across the central keyboard area.
-- **Musical Note Particles**:
-  - Instead of simple dots, this mode triggers floating musical symbols (**♩, ♪, ♫, ♬**) from active key positions.
-  - **Physics-based Ascent**: Notes float upwards with randomized rotation and a "buoyancy" effect.
-- **Dynamic Smoke Effects**:
-  - Notes leave a trail of dissipating smoke particles, creating a soft, premium aesthetic.
-- **Integrated Environment**:
-  - **Active Grass**: The bottom grassy area glows and changes hue dynamically based on the intensity of local frequency clusters.
-  - **Center-Traced Emitters**: Firework sparks and notes are calculated to erupt perfectly from the center of each active piano key.
+### 核心特性
+- **88 键钢琴可视化**：
+  - 屏幕底部的钢琴键水平线，每个按键独立对应其音乐频率。
+  - **对数映射算法**：使用精准的对数尺度（20Hz 至 5000Hz）将 1024 频带的 FFT 数据映射到 88 个琴键，确保视觉能量在键盘中音区均衡分布。
+- **音符形状发光体**：
+  - 烟火不再是单纯的圆点，而是从活跃琴键位置弹出的音乐符号（**♩, ♪, ♫, ♬**）。
+  - **物理上升模拟**：音符伴随随机旋转和“浮力”感缓缓向上飘动。
+- **动态烟雾效果**：
+  - 音符在升起过程中会留下逐渐消散的烟雾粒子痕迹，营造出柔和、高级的视觉质感。
+- **一体化环境**：
+  - **灵动草地**：底部草地区域会根据局部频率簇的强度动态改变亮度和色相。
+  - **精准触点发射**：火花和音符粒子被计算为精确地从每个活跃钢琴键的中点喷发。
