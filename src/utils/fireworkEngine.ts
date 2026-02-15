@@ -161,17 +161,26 @@ export class FireworkEngine {
         const grassHeight = this.height * 0.25;
         const grassTopY = this.height - grassHeight;
 
-        // Logarithmic / Focused Mapping:
-        // We focus on the range where most musical activity happens.
-        // Usually, the first 1/3 of the 1024 bins contains most of the musical energy.
-        const focusFactor = 0.5; // Use 50% of spectral data for 88 keys to avoid "mostly left" bias
-        const dataStep = (data?.length || 1024) * focusFactor / this.keyCounts;
+        // Logarithmic Mapping to 88 Keys:
+        // Piano Range: A0 (27.5Hz) to C8 (4186Hz)
+        // FFT Bins (1024 points, 44.1kHz): Bin size ~43Hz.
+        // We focus on the audible piano range to spread energy across all keys.
+        const minFreq = 20;
+        const maxFreq = 5000;
+        const logMin = Math.log10(minFreq);
+        const logMax = Math.log10(maxFreq);
 
         for (let i = 0; i < this.keyCounts; i++) {
             const x = i * keyWidth;
-            const freqIndex = Math.floor(i * dataStep);
-            // Apply a slight curve to freqIndex to stretch common frequencies
-            const val = data ? data[freqIndex] : 0;
+
+            // Calculate logarithmic frequency for this key
+            const logFreq = logMin + (i / this.keyCounts) * (logMax - logMin);
+            const freq = Math.pow(10, logFreq);
+
+            // Map frequency to FFT index (assuming 44100 sample rate and 1024 FFT size)
+            const freqIndex = Math.floor(freq / 43.06);
+
+            const val = data ? data[Math.min(freqIndex, (data.length - 1))] : 0;
             const intensity = val / 255;
             const centerX = x + keyWidth / 2;
 
