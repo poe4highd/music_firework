@@ -185,7 +185,8 @@ export class FireworkEngine {
             const centerX = this.width / 2;
             const centerY = this.height / 2;
             const grad = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100 + vocalIntensity * 200);
-            const hue = 40 + (this.getInterpolatedValue(vocals.centroid, time, 1) || 1500) / 50;
+            const centroidNorm = this.getInterpolatedValue(vocals.centroid, time, 0.1) || 0;
+            const hue = 40 + centroidNorm * 240; // Map 0-1 to hue 40 (orange) - 280 (purple)
             grad.addColorStop(0, `hsla(${hue}, 100%, 60%, ${vocalIntensity * 0.3})`);
             grad.addColorStop(1, 'transparent');
             this.ctx.fillStyle = grad;
