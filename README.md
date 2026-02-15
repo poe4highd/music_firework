@@ -1,48 +1,40 @@
-# 🌌 Music Firework: Cosmic Edition
+# � Music Firework - Visualize Your Beats
 
-A high-fidelity, audio-reactive music visualization engine that transforms sound into a dynamic deep-space odyssey.
+Music Firework is a premium, real-time music visualizer that transforms your favorite tracks into stunning digital art. Built with React and the Web Audio API.
 
-## 🚀 项目特色 (Core Features)
+## ✨ Features
 
-### 1. 智能语音烟花引擎 (Phonetic Firework Engine)
-*   **多维频谱分析**：实时捕捉 Sub-Bass (厚重低音)、Mid-Range (人声动态) 与 Highs (高频尖锐音)。
-*   **拟真烟花效果**：根据音律自动切换“重锤红牡丹”、“冰蓝流星针”以及“炫紫音浪”等烟花形态。
-*   **高潮触发机制**：在大鼓点或激昂乐章处触发“超新星”爆发模式，产生覆盖全屏的绚丽粒子效果。
+- **Dual Visual Modes**: Toggle between the cosmic 🪐 **Universe** and the poetic 🎹 **Firework**.
+- **Real-time Audio Analysis**: High-precision FFT processing ensures frame-perfect sync between audio and visuals.
+- **Modern UI**: A sleek, dark-mode interface with glassmorphism controls.
+- **PWA Optimized**: Support for standalone installation with high-resolution icons.
 
-### 2. 精准物理学彗星系统 (Perihelion Comet)
-*   **近日点离心轨道**：模拟极长椭圆轨道，彗星在掠过中央核心时会产生明显的动力学加速。
-*   **太阳风物理建模**：尾部的“冰晶粒子”尾迹实时计算与中心太阳的相对位置，确保粒子始终由“太阳风”吹向背离圆心的方向。
+## 🚀 Getting Started
 
-### 3. 可进化的星系视界 (Dynamic Solar System)
-*   **一曲一世界**：每首歌曲生成的行星星系都是随机且唯一的。轨道半径、离心率、旋转倾角与基础速度均在曲首随机生成。
-*   **渐进式时序启停**：随着歌曲的前进，星空、核心、轨道将按特定步调逐一揭幕；而在曲终时，这些元素将以 **随机的次序与延迟** 分批次退场，告别单调的一键消失。
-*   **动态动量**：行星的公转速度随音乐不同强度的频带能量产生实时扰动。
+### Prerequisites
+- Node.js **v22.12.0+** (Configured via `.nvmrc`)
 
-### 4. “时空扭转”视觉特效 (Spatiotemporal Star Shifts)
-*   **三维扭转模式**：包含 **漩涡扭转 (Rotate)**、**全向跃迁 (Drift)** 与 **螺旋缩放 (Zoom)**。
-*   **变频速度感**：每次扭转带有随机的加速度倍率，伴随星光拖出的弧形/线性光轨残影。
-*   **全向动力学**：跃迁 (Drift) 模式不再局限于水平，星星会朝随机确定的宇宙角度整体位移。
-*   **高频同步**：每 5-10 秒随音乐巅峰触发一次，打破静态星空的沉闷。
+### Installation
+```bash
+npm install
+```
 
-### 5. 随机深空遭遇战 (Space Battle System)
-*   **智能 AI 航线**：珍珠白“雪茄舰”与银色“UFO”采用不可预测的 S 形随机航道，维持稳定的深空飞行姿态。
-*   **近距离截击模式**：当两船通过黄金视界区域（屏幕中央 30%）且距离接近时，会自动触发对射。
-*   **差异化武器系统**：
-    *   **战舰**：发射高初速赤红激光。
-    *   **UFO**：释放青色高频电磁波动链接。
-*   **动态受损与毁灭**：根据血量产生实时火花，并在毁灭时引发覆盖全屏的特大烟花爆炸。
+### Development
+```bash
+npm run dev
+```
 
-### 6. 深邃星际背景 (Interstellar Background)
-*   **彩色星云 (Nebulae)**：多层级、不同色相的弥散星云为宇宙提供深厚的视觉深度。
-*   **呼吸群星**：400 颗随机生成的恒星，具有独立的呼吸频率与亮度偏移，营造活着的星空感。
+### Build
+```bash
+npm run build
+```
 
-## 🛠️ 技术栈 (Tech Stack)
-*   **Framework**: React 19 + TypeScript (Vite)
-*   **Styling**: Tailwind CSS v4
-*   **Core**: HTML5 Canvas API + Web Audio API
-*   **Renderer**: 定制高效粒子引擎 (Particle Engine)
+## 📖 Documentation
+For a deep dive into the technical implementation and specific features of each visualization mode, see:
+👉 [Visual Modes Feature Details](./docs/modes.md)
 
-## 🎮 如何开始 (Getting Started)
-1. 安装依赖：`npm install`
-2. 启动开发服务器：`npm run dev`
-3. 访问链接并点击 **"Try Example"** 或上传您自己的 MP3 文件，开始您的宇宙视听之旅。
+## 🛠 Tech Stack
+- **Framework**: React 19
+- **Build Tool**: Vite 7
+- **Styling**: Tailwind CSS 4
+- **Core Engine**: Canvas API & Web Audio API
