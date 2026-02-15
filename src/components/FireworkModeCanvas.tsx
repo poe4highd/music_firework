@@ -10,10 +10,23 @@ interface FireworkModeCanvasProps {
 }
 
 const FireworkModeCanvas: React.FC<FireworkModeCanvasProps> = ({
-    getFrequencyData
+    getFrequencyData,
+    getCurrentTime
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<FireworkEngine | null>(null);
+
+    useEffect(() => {
+        // Fetch Mock Data
+        fetch('/mock_audio_data.json')
+            .then(res => res.json())
+            .then(data => {
+                if (engineRef.current) {
+                    engineRef.current.setMockData(data);
+                }
+            })
+            .catch(err => console.error('Failed to load mock data:', err));
+    }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -33,15 +46,18 @@ const FireworkModeCanvas: React.FC<FireworkModeCanvasProps> = ({
         window.addEventListener('resize', handleResize);
         handleResize();
 
-        engineRef.current = new FireworkEngine(ctx, canvas.width, canvas.height);
+        if (!engineRef.current) {
+            engineRef.current = new FireworkEngine(ctx, canvas.width, canvas.height);
+        }
 
         let animationId: number;
 
         const render = () => {
             if (engineRef.current) {
                 const data = getFrequencyData();
+                const time = getCurrentTime();
                 engineRef.current.update();
-                engineRef.current.draw(data);
+                engineRef.current.draw(data, time);
             }
             animationId = requestAnimationFrame(render);
         };
@@ -52,7 +68,7 @@ const FireworkModeCanvas: React.FC<FireworkModeCanvasProps> = ({
             window.removeEventListener('resize', handleResize);
             cancelAnimationFrame(animationId);
         };
-    }, [getFrequencyData]);
+    }, [getFrequencyData, getCurrentTime]);
 
     return (
         <canvas

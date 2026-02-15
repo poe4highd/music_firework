@@ -139,15 +139,92 @@ export class FireworkEngine {
         }
     }
 
-    draw(data: Uint8Array | null) {
+    private lastProcessTime: number = 0;
+    private mockData: any = null;
+
+    setMockData(data: any) {
+        this.mockData = data;
+    }
+
+    draw(data: Uint8Array | null, time: number = 0) {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.drawBackground();
-        this.drawGrassAndKeys(data);
+
+        if (this.mockData) {
+            this.drawDataDriven(time);
+        } else {
+            this.drawGrassAndKeys(data);
+        }
+
         this.drawSmoke();
         this.drawParticles();
     }
 
+    private drawDataDriven(time: number) {
+        if (!this.mockData) return;
+
+        const { drums, vocals, bass, other } = this.mockData.tracks;
+        const grassTopY = this.height * 0.75;
+
+        // 1. Drums -> Fireworks Trigger (Onset)
+        // Check for new onsets between lastProcessTime and current time
+        if (drums.events) {
+            drums.events.forEach((onset: number) => {
+                if (onset > this.lastProcessTime && onset <= time) {
+                    const x = this.width * (0.3 + Math.random() * 0.4); // Random center-ish
+                    const intensity = this.getInterpolatedValue(drums.energy, time, 0.1);
+                    const hue = 0; // Red for drums
+                    this.createFireworkBatch(x, grassTopY, `hsla(${hue}, 100%, 70%, 1)`, intensity || 0.8);
+                }
+            });
+        }
+
+        // 2. Vocals -> Central Glow (Energy)
+        const vocalIntensity = this.getInterpolatedValue(vocals.energy, time, 0.1);
+        if (vocalIntensity > 0) {
+            const centerX = this.width / 2;
+            const centerY = this.height / 2;
+            const grad = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100 + vocalIntensity * 200);
+            const hue = 40 + (this.getInterpolatedValue(vocals.centroid, time, 1) || 1500) / 50;
+            grad.addColorStop(0, `hsla(${hue}, 100%, 60%, ${vocalIntensity * 0.3})`);
+            grad.addColorStop(1, 'transparent');
+            this.ctx.fillStyle = grad;
+            this.ctx.fillRect(0, 0, this.width, this.height);
+        }
+
+        // 3. Bass -> Floor Vibration
+        const bassIntensity = this.getInterpolatedValue(bass.energy, time, 0.1);
+        this.ctx.fillStyle = `rgba(100, 50, 255, ${bassIntensity * 0.2})`;
+        this.ctx.fillRect(0, grassTopY, this.width, this.height - grassTopY);
+
+        // 4. Other -> Floating Notes
+        if (other.onsets) {
+            other.onsets.forEach((onset: number) => {
+                if (onset > this.lastProcessTime && onset <= time) {
+                    const x = Math.random() * this.width;
+                    const val = this.getInterpolatedValue(other.energy, time, 0.1);
+                    this.createNoteParticle(x, grassTopY, 'rgba(255, 255, 255, 0.8)', val || 0.5);
+                }
+            });
+        }
+
+        this.lastProcessTime = time;
+    }
+
+    private getInterpolatedValue(arr: number[] | undefined, time: number, step: number): number {
+        if (!arr || arr.length === 0) return 0;
+        const index = Math.floor(time / step);
+        if (index >= arr.length) return arr[arr.length - 1];
+        if (index < 0) return arr[0];
+
+        // Simple linear interpolation
+        const nextIndex = Math.min(index + 1, arr.length - 1);
+        const t = (time % step) / step;
+        return arr[index] * (1 - t) + arr[nextIndex] * t;
+    }
+
     private drawBackground() {
+        // ... (remaining code unchanged)
         const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
         grad.addColorStop(0, '#000814');
         grad.addColorStop(0.7, '#001d3d');
