@@ -1,3 +1,4 @@
+[2026-02-15] | [Feature] | 多格式文件支持 (MP3/JSON) | 首页支持加载离线 JSON 特征数据，实现数据驱动渲染闭环 | LandingPage.tsx
 [2026-02-15] | [Config] | API 环境变量支持 | 迁移硬编码地址至 .env，解决跨域与远程接入灵活性 | .env.example
 [2026-02-15] | [Integration] | 后端 API 联调成功 | 使用 Badminton.mp3 完成端到端测试，特征数据完全适配契约 | DEV_LOG.md
 [2026-02-15] | [Feature] | 数据驱动渲染原型落地 | 实现 Mock 数据驱动、引擎重构与数据契约定义 | docs/backend_data_spec.md

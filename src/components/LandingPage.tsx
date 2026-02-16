@@ -13,8 +13,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onFileSelect, onTryExample, a
         e.preventDefault();
         setIsDragging(false);
         const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('audio/')) {
-            onFileSelect(file);
+        if (file) {
+            const isAudio = file.type.startsWith('audio/');
+            const isJSON = file.type === 'application/json' || file.name.endsWith('.json');
+            if (isAudio || isJSON) {
+                onFileSelect(file);
+            }
         }
     };
 
@@ -42,24 +46,24 @@ const LandingPage: React.FC<LandingPageProps> = ({ onFileSelect, onTryExample, a
 
                 <p className="text-gray-300 text-lg mb-8 leading-relaxed">
                     Watch your favorite tracks explode into a symphony of light.
-                    Upload an MP3 to see the bass, vocals, and treble come alive as fireworks.
+                    Upload an **MP3** to analyze live, or **JSON** for AI-enhanced fireworks.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
                     <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <h3 className="text-blue-400 font-semibold mb-1">Low (Bass)</h3>
-                        <p className="text-xs text-gray-400">Large rhythmic explosions</p>
+                        <h3 className="text-blue-400 font-semibold mb-1">Upload Audio</h3>
+                        <p className="text-[10px] text-gray-400">FFT based real-time visualization</p>
                     </div>
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <h3 className="text-pink-400 font-semibold mb-1">Mids (Vocals)</h3>
-                        <p className="text-xs text-gray-400">Colorful vibrant bursts</p>
+                    <div className="p-4 rounded-xl bg-white/10 border border-purple-500/30">
+                        <h3 className="text-purple-400 font-semibold mb-1">Upload JSON</h3>
+                        <p className="text-[10px] text-gray-400">Precise AI feature-driven rendering</p>
                     </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <label className="cursor-pointer px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
-                        Choose MP3
-                        <input type="file" className="hidden" accept="audio/*" onChange={handleFileChange} />
+                        Choose MP3 / JSON
+                        <input type="file" className="hidden" accept="audio/*,.json,application/json" onChange={handleFileChange} />
                     </label>
 
                     <button
@@ -71,7 +75,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onFileSelect, onTryExample, a
                 </div>
 
                 <p className="mt-8 text-sm text-gray-500 animate-pulse">
-                    Drag and drop your music file anywhere to begin
+                    Drag and drop your audio or analysis file anywhere to begin
                 </p>
             </div>
 

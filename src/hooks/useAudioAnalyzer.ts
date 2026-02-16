@@ -186,6 +186,12 @@ export const useAudioAnalyzer = () => {
         }
     }, []);
 
+    const loadAIResult = useCallback((data: any) => {
+        setAiData(data);
+        setAiStatus('completed');
+        setAiProgress('成功加载本地分析数据');
+    }, []);
+
     return {
         loadAudio,
         togglePlay,
@@ -197,6 +203,7 @@ export const useAudioAnalyzer = () => {
         analyzer: analyzer.current,
         // AI Integration
         processWithAI,
+        loadAIResult,
         aiStatus,
         aiProgress,
         aiData

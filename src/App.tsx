@@ -15,6 +15,7 @@ function App() {
     getCurrentTime,
     analysisData,
     processWithAI,
+    loadAIResult,
     aiStatus,
     aiProgress,
     aiData
@@ -24,11 +25,33 @@ function App() {
   const [visualMode, setVisualMode] = useState<'universe' | 'firework'>('universe');
 
   const handleFileSelect = useCallback(async (file: File) => {
-    setFileName(file.name);
-    setCurrentFile(file);
-    await loadAudio(file);
-    togglePlay(); // Auto play after load
-  }, [loadAudio, togglePlay]);
+    const isJSON = file.type === 'application/json' || file.name.endsWith('.json');
+
+    if (isJSON) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target?.result as string);
+          loadAIResult(data);
+          setFileName(file.name);
+          setVisualMode('firework');
+          // Note: audioLoaded remains false unless they already uploaded an MP3
+          // But technically data is loaded. To see it, we need audioLoaded = true.
+          // However, we want them to upload the MP3 too.
+          // For now, let's just alert.
+          alert('数据加载成功！请再上传对应的 MP3 音频以开始欣赏。');
+        } catch (err) {
+          alert('JSON 解析失败');
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      setFileName(file.name);
+      setCurrentFile(file);
+      await loadAudio(file);
+      togglePlay(); // Auto play after load
+    }
+  }, [loadAudio, togglePlay, loadAIResult]);
 
   const handleTryExample = useCallback(async () => {
     try {
