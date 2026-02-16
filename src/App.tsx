@@ -13,13 +13,19 @@ function App() {
     audioLoaded,
     getFrequencyData,
     getCurrentTime,
-    analysisData
+    analysisData,
+    processWithAI,
+    aiStatus,
+    aiProgress,
+    aiData
   } = useAudioAnalyzer();
   const [fileName, setFileName] = useState('');
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [visualMode, setVisualMode] = useState<'universe' | 'firework'>('universe');
 
   const handleFileSelect = useCallback(async (file: File) => {
     setFileName(file.name);
+    setCurrentFile(file);
     await loadAudio(file);
     togglePlay(); // Auto play after load
   }, [loadAudio, togglePlay]);
@@ -31,6 +37,7 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch');
       const blob = await response.blob();
       const file = new File([blob], 'Badminton.mp3', { type: 'audio/mp3' });
+      setCurrentFile(file);
       await loadAudio(file);
       togglePlay();
     } catch (e) {
@@ -38,6 +45,12 @@ function App() {
       alert('Failed to load example. Please upload your own MP3!');
     }
   }, [loadAudio, togglePlay]);
+
+  const handleAIProcess = () => {
+    if (currentFile) {
+      processWithAI(currentFile);
+    }
+  };
 
   const handleReset = () => {
     window.location.reload(); // Simple way to reset everything
@@ -58,7 +71,19 @@ function App() {
           getCurrentTime={getCurrentTime}
           analysisData={analysisData}
           isPlaying={isPlaying}
+          aiData={aiData}
         />
+      )}
+
+      {/* AI Processing Status Overlay */}
+      {aiStatus !== 'idle' && (
+        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          <span className="text-white text-sm font-medium">{aiProgress}</span>
+          {aiStatus === 'completed' && (
+            <span className="text-green-400 text-xs">✨ 已激活高级分离效果</span>
+          )}
+        </div>
       )}
 
       <LandingPage
@@ -75,6 +100,8 @@ function App() {
           fileName={fileName}
           visualMode={visualMode}
           onModeChange={setVisualMode}
+          onAIProcess={handleAIProcess}
+          aiStatus={aiStatus}
         />
       )}
 

@@ -7,24 +7,46 @@ interface ControlsProps {
     fileName: string;
     visualMode: 'universe' | 'firework';
     onModeChange: (mode: 'universe' | 'firework') => void;
+    onAIProcess: () => void;
+    aiStatus: string;
 }
 
-const Controls: React.FC<ControlsProps> = ({ isPlaying, onTogglePlay, onReset, fileName, visualMode, onModeChange }) => {
+const Controls: React.FC<ControlsProps> = ({
+    isPlaying,
+    onTogglePlay,
+    onReset,
+    fileName,
+    visualMode,
+    onModeChange,
+    onAIProcess,
+    aiStatus
+}) => {
     return (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-md px-4">
-            <div className="glass px-6 py-4 rounded-2xl flex items-center justify-between gap-6">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-xl px-4">
+            <div className="glass px-6 py-4 rounded-3xl flex items-center justify-between gap-4 border border-white/10">
                 <div className="flex-1 min-w-0">
                     <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Now Playing</p>
                     <p className="text-white font-medium truncate text-sm">{fileName}</p>
                 </div>
+
+                {/* AI Processing Button */}
+                {visualMode === 'firework' && aiStatus === 'idle' && (
+                    <button
+                        onClick={onAIProcess}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold hover:scale-105 transition-transform shadow-lg shadow-purple-500/20"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                        AI 增强
+                    </button>
+                )}
 
                 {/* Mode Toggle */}
                 <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
                     <button
                         onClick={() => onModeChange('universe')}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${visualMode === 'universe'
-                                ? 'bg-white text-black shadow-lg'
-                                : 'text-gray-400 hover:text-white'
+                            ? 'bg-white text-black shadow-lg'
+                            : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         UNIVERSE
@@ -32,8 +54,8 @@ const Controls: React.FC<ControlsProps> = ({ isPlaying, onTogglePlay, onReset, f
                     <button
                         onClick={() => onModeChange('firework')}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${visualMode === 'firework'
-                                ? 'bg-white text-black shadow-lg'
-                                : 'text-gray-400 hover:text-white'
+                            ? 'bg-white text-black shadow-lg'
+                            : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         FIREWORK

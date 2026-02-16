@@ -134,6 +134,58 @@ export const useAudioAnalyzer = () => {
         return audioContext.current.currentTime - startTime.current;
     }, [isPlaying]);
 
+    const [aiStatus, setAiStatus] = useState<'idle' | 'uploading' | 'processing' | 'completed' | 'failed'>('idle');
+    const [aiProgress, setAiProgress] = useState('');
+    const [aiData, setAiData] = useState<any>(null);
+
+    const processWithAI = useCallback(async (file: File) => {
+        setAiStatus('uploading');
+        setAiProgress('正在上传音频...');
+
+        const API_BASE = 'http://localhost:8002';
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('include_audio', 'false');
+
+            const uploadResp = await fetch(`${API_BASE}/api/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!uploadResp.ok) throw new Error('上传失败');
+            const { task_id } = await uploadResp.json();
+
+            setAiStatus('processing');
+            setAiProgress('准备处理...');
+
+            // Polling
+            const poll = async () => {
+                const res = await fetch(`${API_BASE}/api/task/${task_id}`).then(r => r.json());
+                if (res.status === 'completed') {
+                    setAiProgress('正在获取分析结果...');
+                    const analysis = await fetch(`${API_BASE}${res.files[0]}`).then(r => r.json());
+                    setAiData(analysis);
+                    setAiStatus('completed');
+                    setAiProgress('处理完成！');
+                    return;
+                }
+                if (res.status === 'failed') {
+                    throw new Error(res.error || '后端处理失败');
+                }
+                setAiProgress(res.progress || '正在分析中...');
+                setTimeout(poll, 3000);
+            };
+
+            await poll();
+        } catch (err: any) {
+            console.error(err);
+            setAiStatus('failed');
+            setAiProgress(`错误: ${err.message}`);
+        }
+    }, []);
+
     return {
         loadAudio,
         togglePlay,
@@ -142,7 +194,12 @@ export const useAudioAnalyzer = () => {
         getFrequencyData,
         getCurrentTime,
         analysisData,
-        analyzer: analyzer.current
+        analyzer: analyzer.current,
+        // AI Integration
+        processWithAI,
+        aiStatus,
+        aiProgress,
+        aiData
     };
 };
 

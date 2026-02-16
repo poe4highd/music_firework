@@ -7,26 +7,22 @@ interface FireworkModeCanvasProps {
     getCurrentTime: () => number;
     analysisData: AnalysisFrame[];
     isPlaying: boolean;
+    aiData?: any;
 }
 
 const FireworkModeCanvas: React.FC<FireworkModeCanvasProps> = ({
     getFrequencyData,
-    getCurrentTime
+    getCurrentTime,
+    aiData
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<FireworkEngine | null>(null);
 
     useEffect(() => {
-        // Fetch Mock Data
-        fetch('/mock_audio_data.json')
-            .then(res => res.json())
-            .then(data => {
-                if (engineRef.current) {
-                    engineRef.current.setMockData(data);
-                }
-            })
-            .catch(err => console.error('Failed to load mock data:', err));
-    }, []);
+        if (engineRef.current && aiData) {
+            engineRef.current.setMockData(aiData);
+        }
+    }, [aiData]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
