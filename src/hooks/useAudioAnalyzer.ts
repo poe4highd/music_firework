@@ -142,7 +142,7 @@ export const useAudioAnalyzer = () => {
         setAiStatus('uploading');
         setAiProgress('正在上传音频...');
 
-        const API_BASE = 'http://localhost:8002';
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002';
 
         try {
             const formData = new FormData();
